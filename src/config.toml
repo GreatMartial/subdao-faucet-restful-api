@@ -1,0 +1,23 @@
+[app]
+app_name = "faucet"
+schema = "http"
+app_host = "localhost"
+app_port = 8080
+
+app_banner = true
+
+controllers = "./src/api/controllers/**/*Controller.ts"
+
+[network]
+
+
+[network.substrate]
+name = "subdao"
+ws = "ws://127.0.0.1:9933"
+contract_address = "abc"
+abi_path = "def"
+user_address = "ght"
+
+[log]
+log_level = "debug"
+log_output = "dev"
