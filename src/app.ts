@@ -5,7 +5,7 @@ import { Logger } from './lib/logger';
 import { expressLoader } from './loaders/expressLoader';
 import { winstonLoader } from './loaders/winstonLoader';
 
-const log = Logger(__filename);
+const log = new Logger(__filename);
 bootstrapMicroframework({
   loaders: [
     winstonLoader,

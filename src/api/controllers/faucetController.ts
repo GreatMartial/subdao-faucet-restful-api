@@ -2,19 +2,20 @@ import {
   Authorized, Body, Delete, Get, JsonController, OnUndefined, Param, Post, Put, Req
 } from 'routing-controllers';
 
-import { User } from '../models/User';
-import { faucetServiceInterface } from '../services/faucet';
+import { FaucetServiceInterface } from '../services/faucet';
 import { subdaoNode } from '../network/subdao';
+import { config } from '../../config';
 
 @JsonController('/faucet')
 export class faucetController {
-    api: faucetServiceInterface;
+    api: FaucetServiceInterface;
     constructor() {
-      this.getApiInstance().then(() => {});
+      this.api = this.getApiInstance();
+      // this.getApiInstance().then(() => {});
     };
 
-    async getApiInstance(): faucetServiceInterface {
-      switch (network.name) {
+    getApiInstance(): FaucetServiceInterface {
+      switch (config.app.name) {
         case 'subdao':
           this.api = new subdaoNode();
           break;
@@ -30,7 +31,7 @@ export class faucetController {
     }
     */
     @Post('/')
-    public sendToken(address: string, amount: string): void {
+    public sendToken(address: string, amount: string): Promise<(boolean)> {
       return this.api.sendToken(address, amount);
     }
 }

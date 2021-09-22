@@ -1,4 +1,4 @@
-import { config } from './../config';
+import { config } from '../config';
 import { MicroframeworkLoader, MicroframeworkSettings } from 'microframework-w3tec';
 import { configure, format, transports } from 'winston';
 
