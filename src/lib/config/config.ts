@@ -1,21 +1,41 @@
-import * as path from 'path';
 import * as fs from 'fs';
-import * as pkg from '../../../package.json';
 import toml from '@ltd/j-toml';
+import { safeTouch } from 'safe-touch';
 
-/*
-export function getValue(key: string): string {
-  const value = src.get(key) as string;
-  if (typeof value === 'undefined') {
-    throw new Error(`Environment variable ${key} is not set.`);
+import * as pkg from '../../../package.json';
+
+type NetworkConfig = {
+  plateform: number,
+  detail: any[],
+}
+const enum NetworkType {
+  SUBSCRIPTION = 0,
+  OTHER = 1,
+}
+
+function getValue(object: any, path: string): any {
+  return path.replace(/\[/g, '.').replace(/\]/g, '').split('.').reduce((o, k) => (o || {})[k], object);
+}
+
+let plateform: number;
+export function getNetworkByConfig(object: any, path: string): any {
+  const res = [];
+  if (object.network.substrate !== undefined) {
+    plateform = NetworkType.SUBSCRIPTION;
   }
 
-  return value;
-}
-*/
-
-export function getValueArray(src: Map<string, any>, key: string): string[] {
-  return [];
+  const result = getValue(object, path);
+  for (let i = 0; i < result.length; i++) {
+    res.push({
+      plateform,
+      name: getValue(result[i], 'name'),
+      ws: getValue(result[i], 'ws'),
+      contractAddress: getValue(result[i], 'contractAddress'),
+      abiPath: getValue(result[i], 'abiPath'),
+      userAddress: getValue(result[i], 'userAddress'),
+    });
+  }
+  return res;
 }
 
 export function toBool(src: Map<string, any>, value: string): boolean {
@@ -31,17 +51,16 @@ export function getPaths(path: string): string[] {
   return path.
 }
 */
-
 export class Config {
   app: {
     name: string,
     version: string,
     description: string,
-    host: string,
     schema: string,
+    host: string,
+    port: string,
     routePrefix: string,
-    port: number,
-    banner: string,
+    banner: boolean,
     dirs: {
       controllers: string[],
     }
@@ -49,11 +68,13 @@ export class Config {
 
   network: [
     {
+      plateform: number,
       name: string,
+      ws: string,
       contractAddress: string,
       abiPath: string,
       userAddress: string,
-    },
+    }
   ]
 
   log: {
@@ -62,13 +83,14 @@ export class Config {
   }
 
   constructor(filePath: string) {
-    const configMap = this.createCofing(filePath);
-    this.app = configMap.get('app');
-    this.network = configMap.get('network');
-    this.log = configMap.get('log');
+    const config = this.createConfig(filePath);
+    this.app = config.app;
+    this.app.version = (pkg as any).version;
+    this.network = getNetworkByConfig(config, 'network.substrate');
+    this.log = config.log;
   }
 
-  createCofing(filePath: string): Map<string, any> {
+  createConfig(filePath: string): any {
     const fileBytes = fs.readFileSync(filePath, 'utf8');
     let rootTable: any;
     try {
@@ -76,7 +98,6 @@ export class Config {
     } catch (err) {
         console.error(err);
     }
-    const configToMap = new Map(Object.entries(rootTable));
-    return configToMap;
+    return rootTable;
   }
 }

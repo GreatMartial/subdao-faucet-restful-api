@@ -1,23 +1,23 @@
 [app]
-app_name = "faucet"
+name = "faucet"
 schema = "http"
-app_host = "localhost"
-app_port = 8080
+host = "localhost"
+port = "8080"
 
-app_banner = true
+routePrefix = "/api"
+
+banner = true
 
 controllers = "./src/api/controllers/**/*Controller.ts"
 
 [network]
-
-
-[network.substrate]
+[[network.substrate]]
 name = "subdao"
 ws = "ws://127.0.0.1:9933"
-contract_address = "abc"
-abi_path = "def"
-user_address = "ght"
+contractAddress = "abc"
+abiPath = "def"
+userAddress = "ght"
 
 [log]
-log_level = "debug"
-log_output = "dev"
+level = "debug"
+output = "dev"

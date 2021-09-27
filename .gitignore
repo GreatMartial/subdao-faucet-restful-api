@@ -1,1 +1,5 @@
+# Node files #
 node_modules
+
+# Dist #
+dist/

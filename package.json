@@ -14,7 +14,8 @@
   "dependencies": {
     "@ltd/j-toml": "^1.12.2",
     "@polkadot/api-contract": "^6.0.5",
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "safe-touch": "^0.4.1"
   },
   "devDependencies": {
     "@polkadot/api": "^6.0.2",
